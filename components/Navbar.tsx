@@ -77,7 +77,7 @@ export default function Navbar() {
 
           {/* GitHub Star Button */}
           <a
-            href="https://github.com/ShibamDey-cmd/Dev-RoastAI"
+            href="https://github.com/mrdeyroy/dev-roast-ai"
             target="_blank"
             rel="noopener noreferrer"
             className="no-underline"
