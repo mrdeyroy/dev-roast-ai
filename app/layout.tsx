@@ -58,7 +58,7 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen">
+      <body className="min-h-screen" suppressHydrationWarning>
         {/* Mesh gradient background */}
         <div className="mesh-gradient-bg" aria-hidden="true" />
         <div className="mesh-gradient-extra" aria-hidden="true" />
