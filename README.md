@@ -95,5 +95,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/mrdeyroy">Soumo Dey Roy</a></sub>
+  <sub>Built with ❤️ by <a href="https://github.com/mrdeyroy">Shibam Dey Roy</a></sub>
 </div>
