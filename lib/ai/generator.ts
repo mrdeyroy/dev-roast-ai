@@ -6,9 +6,20 @@ import type {
 } from "@/lib/types/roast";
 import { buildRoastPrompt, buildLinkedInRoastPrompt, buildPortfolioRoastPrompt } from "./prompts";
 import { getSeverityFromScore } from "@/lib/scoring/calculator";
+import { SYSTEM_PROMPTS } from "./system-prompt";
 
 // ============================================
-// OpenRouter AI Roast Generator
+// AI Caching (In-Memory)
+// ============================================
+const roastCache = new Map<string, { result: RoastResult; timestamp: number }>();
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+function getCacheKey(type: string, id: string, mode: string) {
+  return `${type}:${id}:${mode}`;
+}
+
+// ============================================
+// OpenRouter AI Roast Generator (Parallel Race Strategy)
 // ============================================
 
 interface AIRoastOutput {
@@ -20,10 +31,9 @@ interface AIRoastOutput {
 }
 
 const MODELS = [
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "google/gemma-4-31b-it:free",
-  "qwen/qwen3-coder:free",
-  "openrouter/free" // Guaranteed fallback router
+  "deepseek/deepseek-chat-v3-0324:free",
+  "qwen/qwen3-32b:free",
+  "google/gemma-3-27b-it:free",
 ];
 
 function getOpenAIClient() {
@@ -40,49 +50,57 @@ function getOpenAIClient() {
   });
 }
 
-async function callAI(prompt: string, systemMessage: string): Promise<AIRoastOutput | null> {
+async function callAIWithModel(prompt: string, systemMessage: string, model: string, signal: AbortSignal): Promise<string> {
   const openai = getOpenAIClient();
-  if (!openai) return null;
+  if (!openai) throw new Error("No API key");
 
-  let responseText = "";
-  let success = false;
+  const completion = await openai.chat.completions.create(
+    {
+      model: model,
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: prompt },
+      ],
+      temperature: 0.9,
+      max_tokens: 400,
+      response_format: { type: "json_object" }
+    },
+    { signal }
+  );
 
-  for (const model of MODELS) {
-    try {
-      console.log(`Attempting roast with model: ${model}`);
-      const completion = await openai.chat.completions.create({
-        model: model,
-        messages: [
-          { role: "system", content: systemMessage },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.9,
-        max_tokens: 1500,
-        response_format: { type: "json_object" }
-      });
+  const text = completion.choices[0]?.message?.content;
+  if (!text) throw new Error(`Empty response from ${model}`);
+  return text;
+}
 
-      responseText = completion.choices[0].message.content || "";
-      success = true;
-      break;
-    } catch (error) {
-      console.error(`Failed with model ${model}:`, error);
-    }
-  }
-
-  if (!success || !responseText) return null;
+async function callAI(prompt: string, systemMessage: string): Promise<AIRoastOutput | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
 
   try {
-    return JSON.parse(responseText);
-  } catch {
+    const promises = MODELS.map(model => callAIWithModel(prompt, systemMessage, model, controller.signal));
+    
+    // Race all models — first to succeed wins, rest are aborted eventually or ignored
+    const responseText = await Promise.any(promises);
+    clearTimeout(timeoutId);
+
     try {
-      const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
-      if (jsonMatch) return JSON.parse(jsonMatch[1]);
-      const looseMatch = responseText.match(/\{[\s\S]*\}/);
-      return JSON.parse(looseMatch ? looseMatch[0] : "{}");
+      return JSON.parse(responseText);
     } catch {
-      console.error("Failed to parse AI JSON response:", responseText);
-      return null;
+      try {
+        const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (jsonMatch) return JSON.parse(jsonMatch[1]);
+        const looseMatch = responseText.match(/\{[\s\S]*\}/);
+        return JSON.parse(looseMatch ? looseMatch[0] : "{}");
+      } catch {
+        console.error("Failed to parse AI JSON response:", responseText);
+        return null;
+      }
     }
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error("All OpenRouter free models failed or timed out:", error);
+    return null;
   }
 }
 
@@ -103,7 +121,7 @@ function sanitizeAIOutput(output: AIRoastOutput): AIRoastOutput {
 }
 
 // ============================================
-// GitHub Roast Generator (original)
+// GitHub Roast Generator
 // ============================================
 
 export async function generateRoast(
@@ -112,19 +130,24 @@ export async function generateRoast(
   roastMode: string,
   placementMode: boolean
 ): Promise<RoastResult> {
+  const cacheKey = getCacheKey("github", analysis.profile.login, roastMode);
+  const cached = roastCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.result;
+  }
+
   const prompt = buildRoastPrompt(analysis, scores, roastMode);
-  const systemMsg = `You are Dev Roast AI. You roast developers in a funny, internet-native, slightly savage but useful way. You MUST output ONLY valid JSON matching the exact schema provided in the user prompt. No markdown wrapping.`;
+  const systemMsg = SYSTEM_PROMPTS.github || "You are Dev Roast AI. Output ONLY valid JSON.";
 
   const aiOutput = await callAI(prompt, systemMsg);
 
   if (!aiOutput) {
-    console.error("All OpenRouter free models failed or timed out.");
-    return generateGitHubFallbackRoast(analysis, "All free AI models are currently busy.");
+    return generateGitHubFallbackRoast(analysis, "The AI models were too busy to roast you. Lucky escape.");
   }
 
   const safe = sanitizeAIOutput(aiOutput);
 
-  return {
+  const result: RoastResult = {
     id: `${analysis.profile.login}-${Math.random().toString(36).substring(2, 7)}`,
     username: analysis.profile.login,
     profileType: "github",
@@ -181,6 +204,9 @@ export async function generateRoast(
       { category: "Stack Depth", score: scores.stackDepth, fullMark: 100 },
     ],
   };
+
+  roastCache.set(cacheKey, { result, timestamp: Date.now() });
+  return result;
 }
 
 // ============================================
@@ -192,8 +218,18 @@ export async function generateLinkedInRoast(
   scores: LinkedInScoreBreakdown,
   roastMode: string
 ): Promise<RoastResult> {
+  const username = analysis.headline
+    ? analysis.headline.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-").toLowerCase()
+    : "linkedin-user";
+
+  const cacheKey = getCacheKey("linkedin", username, roastMode);
+  const cached = roastCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.result;
+  }
+
   const prompt = buildLinkedInRoastPrompt(analysis, scores, roastMode);
-  const systemMsg = `You are Dev Roast AI — LinkedIn Edition. You roast LinkedIn profiles with corporate cringe humor. Be funny, specific, and reference actual buzzwords and phrases found. Output ONLY valid JSON. No markdown wrapping.`;
+  const systemMsg = SYSTEM_PROMPTS.linkedin || "You are Dev Roast AI. Output ONLY valid JSON.";
 
   const aiOutput = await callAI(prompt, systemMsg);
 
@@ -204,11 +240,7 @@ export async function generateLinkedInRoast(
   const safe = sanitizeAIOutput(aiOutput);
   const m = analysis.metrics;
 
-  const username = analysis.headline
-    ? analysis.headline.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-").toLowerCase()
-    : "linkedin-user";
-
-  return {
+  const result: RoastResult = {
     id: `li-${username}-${Math.random().toString(36).substring(2, 7)}`,
     username: analysis.headline || "LinkedIn User",
     profileType: "linkedin",
@@ -266,6 +298,9 @@ export async function generateLinkedInRoast(
       { category: "Authenticity", score: scores.overallScore, fullMark: 100 },
     ],
   };
+
+  roastCache.set(cacheKey, { result, timestamp: Date.now() });
+  return result;
 }
 
 // ============================================
@@ -277,8 +312,18 @@ export async function generatePortfolioRoast(
   scores: PortfolioScoreBreakdown,
   roastMode: string
 ): Promise<RoastResult> {
+  const username = analysis.title
+    ? analysis.title.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-").toLowerCase()
+    : new URL(analysis.url).hostname.replace(/\./g, "-");
+
+  const cacheKey = getCacheKey("portfolio", username, roastMode);
+  const cached = roastCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.result;
+  }
+
   const prompt = buildPortfolioRoastPrompt(analysis, scores, roastMode);
-  const systemMsg = `You are Dev Roast AI — Portfolio Edition. You roast developer portfolios with design and frontend humor. Be funny, specific, and reference actual technologies and design patterns found. Output ONLY valid JSON. No markdown wrapping.`;
+  const systemMsg = SYSTEM_PROMPTS.portfolio || "You are Dev Roast AI. Output ONLY valid JSON.";
 
   const aiOutput = await callAI(prompt, systemMsg);
 
@@ -289,11 +334,7 @@ export async function generatePortfolioRoast(
   const safe = sanitizeAIOutput(aiOutput);
   const m = analysis.metrics;
 
-  const username = analysis.title
-    ? analysis.title.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-").toLowerCase()
-    : new URL(analysis.url).hostname.replace(/\./g, "-");
-
-  return {
+  const result: RoastResult = {
     id: `pf-${username}-${Math.random().toString(36).substring(2, 7)}`,
     username: analysis.title || new URL(analysis.url).hostname,
     profileType: "portfolio",
@@ -351,11 +392,25 @@ export async function generatePortfolioRoast(
       { category: "Overall", score: scores.overallScore, fullMark: 100 },
     ],
   };
+
+  roastCache.set(cacheKey, { result, timestamp: Date.now() });
+  return result;
 }
 
 // ============================================
 // Fallback Generators
 // ============================================
+
+const EMERGENCY_ROASTS = [
+  "Your GitHub survived. Your README did not.",
+  "Recruiters opened your profile and closed the tab professionally.",
+  "You have 47 repositories and 2 finished projects. Inspirational confidence.",
+  "The AI models refused to look at your code to preserve their sanity."
+];
+
+function getRandomEmergencyRoast() {
+  return EMERGENCY_ROASTS[Math.floor(Math.random() * EMERGENCY_ROASTS.length)];
+}
 
 function generateGitHubFallbackRoast(analysis: GitHubAnalysis, reason: string): RoastResult {
   return {
@@ -380,10 +435,11 @@ function generateGitHubFallbackRoast(analysis: GitHubAnalysis, reason: string): 
       severity: "nuclear",
       score: 10,
       roastLines: [
-        { type: "insult", text: "We tried to ask the AI to roast you, but the models refused to respond." },
+        { type: "insult", text: getRandomEmergencyRoast() },
         { type: "damage", text: reason },
         { type: "analysis", text: `You have ${analysis.metrics.totalRepos} repos, but we couldn't parse them into a real roast.` },
-        { type: "positive", text: "At least your GitHub profile fetching worked perfectly! Those stats below are 100% real." }
+        { type: "positive", text: "At least your GitHub profile fetching worked perfectly! Those stats below are 100% real." },
+        { type: "fix", text: "Try generating the roast again." }
       ],
       metrics: [
         { label: "Total Repos", value: analysis.metrics.totalRepos.toString() },
@@ -396,7 +452,13 @@ function generateGitHubFallbackRoast(analysis: GitHubAnalysis, reason: string): 
       icon: "📄",
       severity: "nuclear",
       score: 10,
-      roastLines: [{ type: "damage", text: "We couldn't generate a real roast for this section." }],
+      roastLines: [
+        { type: "damage", text: "We couldn't generate a real roast for this section." },
+        { type: "insult", text: "It's probably for the best." },
+        { type: "analysis", text: `Total READMEs found: ${analysis.readmeAnalysis.totalWithReadme}` },
+        { type: "fix", text: "Refresh the page to try again." },
+        { type: "positive", text: "Your READMEs exist, so there's that." }
+      ],
       metrics: [
         { label: "Total READMEs", value: analysis.readmeAnalysis.totalWithReadme.toString() },
         { label: "Custom READMEs", value: analysis.readmeAnalysis.totalWithCustomReadme.toString() },
@@ -408,7 +470,13 @@ function generateGitHubFallbackRoast(analysis: GitHubAnalysis, reason: string): 
       icon: "💻",
       severity: "nuclear",
       score: 10,
-      roastLines: [{ type: "damage", text: "The AI is taking a nap." }],
+      roastLines: [
+        { type: "damage", text: "The AI is taking a nap." },
+        { type: "insult", text: "Even our AI didn't want to look at your code." },
+        { type: "analysis", text: `Languages used: ${Object.keys(analysis.metrics.languages).length}` },
+        { type: "fix", text: "Try again when OpenRouter models are less congested." },
+        { type: "positive", text: "You deployed some projects, we think." }
+      ],
       metrics: [
         { label: "Languages Used", value: Object.keys(analysis.metrics.languages).length.toString() },
         { label: "Deployed Projects", value: analysis.metrics.deployedProjects.toString() },
@@ -452,7 +520,9 @@ function generateLinkedInFallbackRoast(analysis: LinkedInAnalysis, scores: Linke
       roastLines: [
         { type: "damage", text: reason },
         { type: "analysis", text: `We found ${m.buzzwordCount} buzzwords and ${m.cringePhraseCount} cringe phrases. The data speaks for itself.` },
+        { type: "insult", text: getRandomEmergencyRoast() },
         { type: "positive", text: "At least your buzzword density is real data. That's more honest than your LinkedIn bio." },
+        { type: "fix", text: "Wait a minute and try again." }
       ],
       metrics: [
         { label: "Buzzwords", value: m.buzzwordCount.toString() },
@@ -462,12 +532,24 @@ function generateLinkedInFallbackRoast(analysis: LinkedInAnalysis, scores: Linke
     },
     readmeRoast: {
       title: "About & Bio", icon: "📋", severity: "nuclear", score: scores.recruiterReadability,
-      roastLines: [{ type: "damage", text: "AI couldn't generate a roast, but your about section probably roasts itself." }],
+      roastLines: [
+        { type: "damage", text: "AI couldn't generate a roast, but your about section probably roasts itself." },
+        { type: "insult", text: "It's just too corporate." },
+        { type: "analysis", text: `You wrote ${m.totalWords} words about yourself.` },
+        { type: "fix", text: "Maybe tone down the 'passionate leader' stuff." },
+        { type: "positive", text: "You know how to use adjectives." }
+      ],
       metrics: [{ label: "Word Count", value: m.totalWords.toString() }],
     },
     projectRoast: {
       title: "Credibility", icon: "🏆", severity: "nuclear", score: scores.achievementClarity,
-      roastLines: [{ type: "damage", text: "The AI gave up trying to find measurable achievements." }],
+      roastLines: [
+        { type: "damage", text: "The AI gave up trying to find measurable achievements." },
+        { type: "insult", text: "We're all CEOs in our minds." },
+        { type: "analysis", text: `We found ${m.measurableAchievements} real achievements.` },
+        { type: "fix", text: "Add more numbers to your impact." },
+        { type: "positive", text: "Your confidence is inspiring." }
+      ],
       metrics: [{ label: "Measurable Results", value: m.measurableAchievements.toString() }],
     },
     improvements: [{ category: "System", icon: "⚙️", suggestions: ["Try again later", "AI models are congested"] }],
@@ -502,7 +584,9 @@ function generatePortfolioFallbackRoast(analysis: PortfolioAnalysis, scores: Por
       roastLines: [
         { type: "damage", text: reason },
         { type: "analysis", text: `We analyzed ${m.totalWords} words, ${m.imageCount} images, and ${m.projectCount} projects. The AI couldn't bear to comment.` },
+        { type: "insult", text: "It's just another template anyway." },
         { type: "positive", text: "At least your site loaded. That's more than many developer portfolios can claim." },
+        { type: "fix", text: "Try again when AI is awake." }
       ],
       metrics: [
         { label: "Template", value: m.isTemplate ? "Detected" : "Original" },
@@ -511,12 +595,24 @@ function generatePortfolioFallbackRoast(analysis: PortfolioAnalysis, scores: Por
     },
     readmeRoast: {
       title: "Content", icon: "📝", severity: "nuclear", score: scores.contentDepth,
-      roastLines: [{ type: "damage", text: "AI couldn't roast your content. Maybe there wasn't enough to roast." }],
+      roastLines: [
+        { type: "damage", text: "AI couldn't roast your content. Maybe there wasn't enough to roast." },
+        { type: "insult", text: "Under construction since 2018." },
+        { type: "analysis", text: `Found ${m.totalWords} words.` },
+        { type: "fix", text: "Write more about what you actually do." },
+        { type: "positive", text: "Minimalism is a valid design choice." }
+      ],
       metrics: [{ label: "Words", value: m.totalWords.toString() }],
     },
     projectRoast: {
       title: "Tech & Projects", icon: "⚙️", severity: "nuclear", score: scores.projectPresentation,
-      roastLines: [{ type: "damage", text: "The AI surrendered trying to find your projects." }],
+      roastLines: [
+        { type: "damage", text: "The AI surrendered trying to find your projects." },
+        { type: "insult", text: "Another to-do app?" },
+        { type: "analysis", text: `We detected ${m.projectCount} projects.` },
+        { type: "fix", text: "Link your actual code." },
+        { type: "positive", text: "You bought a domain name. Proud of you." }
+      ],
       metrics: [{ label: "Projects Found", value: m.projectCount.toString() }],
     },
     improvements: [{ category: "System", icon: "⚙️", suggestions: ["Try again later", "AI models are congested"] }],

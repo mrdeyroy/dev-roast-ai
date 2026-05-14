@@ -17,6 +17,7 @@ const features = [
     description:
       "Your contribution graph, commit consistency, and repo quality — all under the microscope.",
     color: "var(--accent-cyan)",
+    tag: "Most Popular",
   },
   {
     icon: FileText,
@@ -24,6 +25,7 @@ const features = [
     description:
       "Badge-to-content ratio, broken screenshots, and buzzword counting. We see everything.",
     color: "var(--accent-purple)",
+    tag: null,
   },
   {
     icon: Code2,
@@ -31,6 +33,7 @@ const features = [
     description:
       "Tutorial clones, missing deployments, and the classic weather app. We detect them all.",
     color: "var(--accent-pink)",
+    tag: null,
   },
   {
     icon: BarChart3,
@@ -38,6 +41,7 @@ const features = [
     description:
       "A brutally honest number that tells you where you stand. No sugarcoating.",
     color: "var(--roast-brutal)",
+    tag: "Devastating",
   },
   {
     icon: UserCheck,
@@ -45,6 +49,7 @@ const features = [
     description:
       "Tutorial Warrior? Framework Collector? StackOverflow Survivor? Find out what you are.",
     color: "var(--accent-lime)",
+    tag: null,
   },
   {
     icon: Share2,
@@ -52,6 +57,7 @@ const features = [
     description:
       "Beautiful, screenshot-worthy roast cards optimized for Twitter, LinkedIn, and Instagram.",
     color: "var(--roast-medium)",
+    tag: "Shareable",
   },
 ];
 
@@ -79,10 +85,13 @@ export default function FeaturesSection() {
         style={{ textAlign: "center", marginBottom: "3.5rem" }}
       >
         <span className="section-label">Features</span>
-        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", marginBottom: "1rem" }}>
+        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", marginBottom: "0.75rem" }}>
           Everything you need.{" "}
           <span style={{ color: "var(--text-muted)" }}>Nothing you don&apos;t.</span>
         </h2>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: 500, margin: "0 auto" }}>
+          Six dimensions of brutal honesty powered by AI.
+        </p>
       </motion.div>
 
       {/* Bento Grid */}
@@ -103,26 +112,62 @@ export default function FeaturesSection() {
             <motion.div
               key={i}
               variants={cardVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="card-matte hover-glow"
               style={{
                 padding: "2rem",
                 cursor: "default",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
+              {/* Subtle top-left gradient accent */}
               <div
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: `${feature.color}15`,
-                  border: `1px solid ${feature.color}30`,
-                  marginBottom: "1.25rem",
+                  position: "absolute",
+                  top: -40,
+                  left: -40,
+                  width: 120,
+                  height: 120,
+                  borderRadius: "50%",
+                  background: `radial-gradient(circle, ${feature.color}08, transparent)`,
+                  pointerEvents: "none",
                 }}
-              >
-                <Icon size={22} style={{ color: feature.color }} />
+              />
+
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: `${feature.color}12`,
+                    border: `1px solid ${feature.color}25`,
+                  }}
+                >
+                  <Icon size={22} style={{ color: feature.color }} />
+                </div>
+
+                {feature.tag && (
+                  <span
+                    style={{
+                      fontSize: "0.6rem",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                      padding: "0.2rem 0.5rem",
+                      borderRadius: 6,
+                      background: `${feature.color}12`,
+                      color: feature.color,
+                      border: `1px solid ${feature.color}25`,
+                    }}
+                  >
+                    {feature.tag}
+                  </span>
+                )}
               </div>
 
               <h3

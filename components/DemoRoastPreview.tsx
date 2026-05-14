@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Terminal, Zap } from "lucide-react";
+import { Terminal, Zap, Skull, TrendingDown } from "lucide-react";
 
 const analysisLines = [
   { text: "$ scanning @shibam/github...", color: "var(--accent-cyan)" },
@@ -43,7 +43,7 @@ export default function DemoRoastPreview() {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "2rem",
+          gap: "2.5rem",
           alignItems: "center",
         }}
       >
@@ -54,37 +54,47 @@ export default function DemoRoastPreview() {
             AI analysis in{" "}
             <span className="gradient-text-fire">real time</span>
           </h2>
-          <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "1rem", marginBottom: "1.5rem" }}>
+          <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "1rem", marginBottom: "2rem" }}>
             Watch as our AI scans your profile, detects patterns, and crafts 
             personalized roasts that are equal parts devastating and helpful.
           </p>
-          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
             {[
-              { label: "Profiles Roasted", value: "2,847" },
-              { label: "Avg. Score", value: "47/100" },
-              { label: "Tears Shed", value: "∞" },
+              { label: "Developers Roasted", value: "2,847", trend: "+127", icon: Skull },
+              { label: "Avg. Score", value: "47/100", trend: "-3", icon: TrendingDown },
+              { label: "Tears Shed", value: "∞", trend: "↑", icon: null },
             ].map((stat, i) => (
-              <div key={i}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+              >
                 <div
                   style={{
-                    fontSize: "1.5rem",
+                    fontSize: "1.8rem",
                     fontWeight: 700,
                     fontFamily: "var(--font-heading)",
                     color: "var(--text-primary)",
+                    lineHeight: 1.1,
                   }}
                 >
                   {stat.value}
                 </div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
+                <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
                   {stat.label}
                 </div>
-              </div>
+                <div style={{ fontSize: "0.6rem", color: "var(--accent-lime)", fontWeight: 600, marginTop: "0.15rem" }}>
+                  {stat.trend} this week
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
         {/* Right — Terminal */}
-        <div className="terminal" style={{ position: "relative" }}>
+        <div className="terminal glow-corners" style={{ position: "relative" }}>
           <div className="terminal-header">
             <div className="terminal-dot" style={{ background: "#EF4444" }} />
             <div className="terminal-dot" style={{ background: "#EAB308" }} />
@@ -93,8 +103,8 @@ export default function DemoRoastPreview() {
               analysis_stream.sh
             </span>
             <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--roast-nuclear)", animation: "badgePulse 1.5s ease infinite" }} />
-              <span style={{ fontSize: "0.65rem", fontWeight: 600, color: "var(--roast-nuclear)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              <div className="live-pulse-dot" style={{ width: 6, height: 6 }} />
+              <span style={{ fontSize: "0.6rem", fontWeight: 700, color: "var(--roast-nuclear)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 Live
               </span>
             </div>
@@ -139,22 +149,34 @@ export default function DemoRoastPreview() {
         }}
       >
         {[
-          { icon: Terminal, label: "Roast Categories", value: "5 categories" },
-          { icon: Zap, label: "Roast Modes", value: "5 modes" },
+          { icon: Terminal, label: "Roast Categories", value: "5 categories", desc: "Deep analysis" },
+          { icon: Zap, label: "Roast Modes", value: "5 modes", desc: "From mild to nuclear" },
         ].map((item, i) => {
           const Icon = item.icon;
           return (
-            <div
+            <motion.div
               key={i}
+              whileHover={{ y: -3 }}
               className="card-matte"
-              style={{ padding: "1.25rem 1.5rem", display: "flex", alignItems: "center", gap: "1rem" }}
+              style={{ padding: "1.25rem 1.5rem", display: "flex", alignItems: "center", gap: "1rem", cursor: "default" }}
             >
-              <Icon size={20} style={{ color: "var(--accent-cyan)" }} />
-              <div>
-                <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)" }}>{item.value}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{item.label}</div>
+              <div style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: "rgba(0, 229, 255, 0.08)",
+                border: "1px solid rgba(0, 229, 255, 0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <Icon size={18} style={{ color: "var(--accent-cyan)" }} />
               </div>
-            </div>
+              <div>
+                <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary)" }}>{item.value}</div>
+                <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{item.label}</div>
+              </div>
+            </motion.div>
           );
         })}
       </motion.div>

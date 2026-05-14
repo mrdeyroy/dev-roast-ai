@@ -10,11 +10,11 @@ interface Props {
   index: number;
 }
 
-const severityMap: Record<string, { bg: string; border: string; color: string; label: string }> = {
-  mild: { bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.3)", color: "var(--roast-mild)", label: "Mild" },
-  medium: { bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.3)", color: "var(--roast-medium)", label: "Medium" },
-  brutal: { bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.3)", color: "var(--roast-brutal)", label: "Brutal" },
-  nuclear: { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.3)", color: "var(--roast-nuclear)", label: "Nuclear ☠️" },
+const severityMap: Record<string, { bg: string; border: string; color: string; label: string; glow: string }> = {
+  mild: { bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.3)", color: "var(--roast-mild)", label: "Mild", glow: "rgba(59,130,246,0.1)" },
+  medium: { bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.3)", color: "var(--roast-medium)", label: "Medium", glow: "rgba(234,179,8,0.1)" },
+  brutal: { bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.3)", color: "var(--roast-brutal)", label: "Brutal 🔥", glow: "rgba(249,115,22,0.1)" },
+  nuclear: { bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.3)", color: "var(--roast-nuclear)", label: "Nuclear ☠️", glow: "rgba(239,68,68,0.1)" },
 };
 
 const lineTypeStyles: Record<RoastLine["type"], { emoji: string; color: string }> = {
@@ -41,7 +41,12 @@ export default function RoastCategory({ data, index }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.15 }}
       className="card-matte"
-      style={{ marginBottom: "1rem", overflow: "hidden" }}
+      style={{
+        marginBottom: "1rem",
+        overflow: "hidden",
+        borderLeft: expanded ? `3px solid ${severity.color}` : "3px solid transparent",
+        transition: "border-left-color 0.3s ease",
+      }}
     >
       {/* Header — always visible */}
       <button
@@ -59,19 +64,38 @@ export default function RoastCategory({ data, index }: Props) {
           textAlign: "left",
         }}
       >
-        <span style={{ fontSize: "1.5rem" }}>{data.icon}</span>
+        <motion.span
+          animate={{ scale: expanded ? 1.15 : 1 }}
+          transition={{ duration: 0.2 }}
+          style={{ fontSize: "1.5rem" }}
+        >
+          {data.icon}
+        </motion.span>
 
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: "1rem", fontWeight: 600, fontFamily: "var(--font-heading)" }}>
             {data.title}
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.15rem" }}>
-            Score: {data.score}/100
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.15rem" }}>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+              Score: {data.score}/100
+            </span>
+            {/* Mini score bar */}
+            <div style={{ width: 50, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div style={{
+                width: `${data.score}%`,
+                height: "100%",
+                borderRadius: 2,
+                background: severity.color,
+                transition: "width 0.5s ease",
+              }} />
+            </div>
           </div>
         </div>
 
         {/* Severity badge */}
-        <span
+        <motion.span
+          whileHover={{ scale: 1.05 }}
           style={{
             padding: "0.25rem 0.75rem",
             borderRadius: 999,
@@ -83,7 +107,7 @@ export default function RoastCategory({ data, index }: Props) {
           }}
         >
           {severity.label}
-        </span>
+        </motion.span>
 
         <motion.div
           animate={{ rotate: expanded ? 180 : 0 }}
@@ -111,14 +135,18 @@ export default function RoastCategory({ data, index }: Props) {
                   return (
                     <motion.div
                       key={i}
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -15 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1, duration: 0.3 }}
+                      transition={{ delay: i * 0.08, duration: 0.3 }}
                       style={{
                         display: "flex",
                         gap: "0.75rem",
                         marginBottom: "1rem",
                         alignItems: "flex-start",
+                        padding: "0.5rem 0.75rem",
+                        borderRadius: "var(--radius-sm)",
+                        background: line.type === "damage" ? "rgba(239, 68, 68, 0.04)" : line.type === "positive" ? "rgba(132, 204, 22, 0.04)" : "transparent",
+                        borderLeft: line.type === "damage" ? "2px solid var(--roast-nuclear)" : line.type === "positive" ? "2px solid var(--accent-lime)" : "2px solid transparent",
                       }}
                     >
                       <span style={{ fontSize: "1rem", flexShrink: 0, marginTop: "0.1rem" }}>
@@ -155,8 +183,11 @@ export default function RoastCategory({ data, index }: Props) {
                 }}
               >
                 {data.metrics.map((metric, i) => (
-                  <div
+                  <motion.div
                     key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
                     style={{
                       padding: "0.75rem",
                       borderRadius: "var(--radius-sm)",
@@ -170,10 +201,10 @@ export default function RoastCategory({ data, index }: Props) {
                       </span>
                       <TrendIcon trend={metric.trend} />
                     </div>
-                    <div style={{ fontSize: "0.95rem", fontWeight: 700, fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}>
+                    <div style={{ fontSize: "1rem", fontWeight: 700, fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}>
                       {metric.value}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>

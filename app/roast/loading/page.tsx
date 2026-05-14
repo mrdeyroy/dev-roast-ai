@@ -44,7 +44,7 @@ export default function RoastLoadingPage() {
         }
         return next >= loadingSteps.length ? prev : next;
       });
-    }, 1500);
+    }, 400);
 
     setDisplayedMessages([loadingSteps[0]]);
     return () => clearInterval(timer);

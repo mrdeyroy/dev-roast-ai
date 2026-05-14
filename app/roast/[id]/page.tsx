@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import { motion } from "framer-motion";
 import { DEMO_ROAST } from "@/lib/mock-data";
 import { useRoastStore } from "@/lib/store";
 import { PLATFORM_CONFIG } from "@/lib/utils";
@@ -9,6 +10,7 @@ import RoastHeader from "@/components/roast/RoastHeader";
 import RoastCategory from "@/components/roast/RoastCategory";
 import ImprovementSection from "@/components/roast/ImprovementSection";
 import ShareCard from "@/components/share/ShareCard";
+import SharePrompt from "@/components/share/SharePrompt";
 import Footer from "@/components/Footer";
 
 export default function RoastResultPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,7 +43,9 @@ export default function RoastResultPage({ params }: { params: Promise<{ id: stri
       >
         {/* Platform badge */}
         {!isDemo && (
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
             style={{
               textAlign: "center",
               marginBottom: "1rem",
@@ -58,26 +62,64 @@ export default function RoastResultPage({ params }: { params: Promise<{ id: stri
             >
               {platformConfig.emoji} Real AI-generated {platformConfig.label.toLowerCase()} for {data.profileType === "github" ? `@${data.username}` : data.username}
             </span>
-          </div>
+          </motion.div>
         )}
 
         {/* Header with score */}
         <RoastHeader data={data} />
 
+        {/* Share prompt after score */}
+        <SharePrompt context="after-score" score={data.hireabilityScore} />
+
+        {/* Gradient separator */}
+        <div className="gradient-separator" />
+
         {/* Roast Categories */}
         <div style={{ marginTop: "1.5rem" }}>
-          <h2 style={{ fontSize: "1.2rem", marginBottom: "1rem", color: "var(--text-primary)" }}>
+          <motion.h2
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            style={{
+              fontSize: "1.3rem",
+              marginBottom: "1.25rem",
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
             🔥 The Roast
-          </h2>
+            <span style={{
+              fontSize: "0.65rem",
+              padding: "0.15rem 0.5rem",
+              borderRadius: 6,
+              background: "rgba(239, 68, 68, 0.1)",
+              color: "var(--roast-nuclear)",
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}>
+              {categories.length} categories
+            </span>
+          </motion.h2>
           {categories.map((cat, i) => (
             <RoastCategory key={i} data={cat} index={i} />
           ))}
         </div>
 
+        {/* Share prompt after roast */}
+        <SharePrompt context="after-roast" />
+
+        {/* Gradient separator */}
+        <div className="gradient-separator" />
+
         {/* Improvements */}
-        <div style={{ marginTop: "2rem" }}>
+        <div style={{ marginTop: "1rem" }}>
           <ImprovementSection improvements={data.improvements} />
         </div>
+
+        {/* Share prompt after archetype */}
+        <SharePrompt context="after-archetype" archetypeName={data.archetype.name} />
 
         {/* Share Card — the ONE place to share */}
         <ShareCard data={data} />

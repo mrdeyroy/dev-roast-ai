@@ -87,8 +87,10 @@ export default function ShareCard({ data }: Props) {
 
   const platformConfig = PLATFORM_CONFIG[data.profileType];
 
-  // Get the first roast line for the quote
-  const firstRoastLine = data.githubRoast.roastLines[0]?.text || "No words. Just damage.";
+  // Get the best roast line for the quote
+  const bestRoastLine = data.githubRoast.roastLines.find(l => l.type === "damage")?.text 
+    || data.githubRoast.roastLines[0]?.text 
+    || "No words. Just damage.";
 
   return (
     <motion.div
@@ -99,10 +101,10 @@ export default function ShareCard({ data }: Props) {
     >
       {/* Share CTA */}
       <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        <h2 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>
           Share your <span className="gradient-text-fire">destruction</span>
         </h2>
-        <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
           Let the world know how bad it really is
         </p>
       </div>
@@ -111,16 +113,44 @@ export default function ShareCard({ data }: Props) {
       <div
         ref={cardRef}
         style={{
-          background: "linear-gradient(160deg, #0a0a0f 0%, #111128 50%, #0a0a0f 100%)",
+          background: "linear-gradient(160deg, #0a0a0f 0%, #111128 40%, #0f0f1a 70%, #0a0a0f 100%)",
           borderRadius: "var(--radius-lg)",
-          padding: "2rem",
-          border: "1px solid var(--glass-border)",
+          padding: "2.5rem 2rem",
+          border: "1px solid rgba(255,255,255,0.08)",
           maxWidth: 480,
           margin: "0 auto",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
+        {/* Decorative gradient glow */}
+        <div
+          style={{
+            position: "absolute",
+            top: -100,
+            right: -100,
+            width: 250,
+            height: 250,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(168, 85, 247, 0.08), transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -80,
+            left: -80,
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(0, 229, 255, 0.06), transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Card header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.75rem", position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <div
               style={{
@@ -155,49 +185,60 @@ export default function ShareCard({ data }: Props) {
         </div>
 
         {/* Username + archetype */}
-        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <div style={{ textAlign: "center", marginBottom: "1.75rem", position: "relative" }}>
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 14,
+              width: 64,
+              height: 64,
+              borderRadius: 16,
               background: "linear-gradient(135deg, var(--accent-purple), var(--accent-pink))",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 0.75rem",
-              fontSize: "1.5rem",
+              fontSize: "1.8rem",
+              boxShadow: "0 0 30px rgba(168, 85, 247, 0.2)",
             }}
           >
             {data.archetype.emoji}
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 700, fontFamily: "var(--font-heading)" }}>
+          <div style={{ fontSize: "1.3rem", fontWeight: 700, fontFamily: "var(--font-heading)", letterSpacing: "-0.01em" }}>
             {data.profileType === "github" ? `@${data.username}` : data.username}
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--accent-purple)", fontWeight: 500, marginTop: "0.25rem" }}>
+          <div style={{ fontSize: "0.82rem", color: "var(--accent-purple)", fontWeight: 600, marginTop: "0.25rem" }}>
             {data.archetype.name}
           </div>
         </div>
 
-        {/* Score */}
+        {/* Score — dramatic */}
         <div
           style={{
             textAlign: "center",
-            padding: "1rem",
+            padding: "1.25rem",
             borderRadius: "var(--radius)",
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.4)",
             marginBottom: "1.5rem",
+            position: "relative",
           }}
         >
-          <div style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--text-muted)", marginBottom: "0.4rem" }}>
+          <div style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--text-muted)", marginBottom: "0.5rem" }}>
             {data.profileType === "github" ? "Hireability Score" : data.profileType === "linkedin" ? "LinkedIn Score" : "Portfolio Score"}
           </div>
-          <div style={{ fontSize: "2.5rem", fontWeight: 700, fontFamily: "var(--font-heading)", lineHeight: 1 }}>
+          <div style={{ fontSize: "3rem", fontWeight: 700, fontFamily: "var(--font-heading)", lineHeight: 1 }}>
             <span className="gradient-text-fire">{data.hireabilityScore}</span>
-            <span style={{ fontSize: "1rem", color: "var(--text-muted)" }}>/100</span>
+            <span style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>/100</span>
           </div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "0.3rem" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "0.4rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
             {getRoastLevel(data.hireabilityScore)}
+          </div>
+          {/* Mini roast meter */}
+          <div style={{ marginTop: "0.75rem", height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+            <div style={{
+              width: `${100 - data.hireabilityScore}%`,
+              height: "100%",
+              borderRadius: 2,
+              background: "linear-gradient(90deg, var(--roast-mild), var(--roast-medium), var(--roast-brutal), var(--roast-nuclear))",
+            }} />
           </div>
         </div>
 
@@ -228,10 +269,10 @@ export default function ShareCard({ data }: Props) {
           </ResponsiveContainer>
         </div>
 
-        {/* Funny quote */}
+        {/* Funniest roast quote */}
         <div
           style={{
-            padding: "0.75rem 1rem",
+            padding: "0.85rem 1.15rem",
             borderRadius: "var(--radius-sm)",
             background: "rgba(239, 68, 68, 0.08)",
             border: "1px solid rgba(239, 68, 68, 0.15)",
@@ -240,13 +281,32 @@ export default function ShareCard({ data }: Props) {
             fontFamily: "var(--font-mono)",
             textAlign: "center",
             lineHeight: 1.5,
+            position: "relative",
           }}
         >
-          &ldquo;{firstRoastLine}&rdquo;
+          <span style={{ position: "absolute", top: -8, left: 16, fontSize: "1.2rem" }}>💀</span>
+          &ldquo;{bestRoastLine}&rdquo;
+        </div>
+
+        {/* Footer branding */}
+        <div style={{
+          textAlign: "center",
+          marginTop: "1.25rem",
+          paddingTop: "1rem",
+          borderTop: "1px solid rgba(255,255,255,0.04)",
+        }}>
+          <span style={{
+            fontSize: "0.6rem",
+            color: "var(--text-muted)",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+          }}>
+            devroast.ai · AI-powered developer roasting
+          </span>
         </div>
       </div>
 
-      {/* Share Buttons — simple, 4 working options */}
+      {/* Share Buttons */}
       <div
         style={{
           display: "flex",
@@ -256,7 +316,9 @@ export default function ShareCard({ data }: Props) {
           flexWrap: "wrap",
         }}
       >
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={handleExport}
           className="btn-gradient"
           style={{
@@ -268,9 +330,11 @@ export default function ShareCard({ data }: Props) {
           }}
         >
           <Download size={16} />
-          Download Card
-        </button>
-        <button
+          <span>Download Card</span>
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={handleTwitterShare}
           className="btn-outline"
           style={{
@@ -283,8 +347,10 @@ export default function ShareCard({ data }: Props) {
         >
           <XIcon size={16} />
           Share on X
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={handleLinkedInShare}
           className="btn-outline"
           style={{
@@ -297,8 +363,10 @@ export default function ShareCard({ data }: Props) {
         >
           <BriefcaseBusiness size={16} />
           Share on LinkedIn
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={handleCopyLink}
           className="btn-outline"
           style={{
@@ -311,7 +379,7 @@ export default function ShareCard({ data }: Props) {
         >
           <Link2 size={16} />
           Copy Link
-        </button>
+        </motion.button>
       </div>
 
       {/* Toast notification */}

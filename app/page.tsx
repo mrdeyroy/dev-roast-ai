@@ -13,10 +13,13 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
+        <div className="gradient-separator" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem" }} />
         <FeaturesSection />
         <DemoRoastPreview />
+        <div className="gradient-separator" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem" }} />
         <Testimonials />
         <AnalyticsSection />
+        <div className="gradient-separator" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem" }} />
         <FAQ />
       </main>
       <Footer />
