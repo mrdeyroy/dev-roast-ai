@@ -8,6 +8,7 @@ import { Flame, Menu, X, Star } from "lucide-react";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/roast/demo-shibam-2024", label: "Demo Roast" },
+  { href: "/history", label: "History" },
 ];
 
 export default function Navbar() {
