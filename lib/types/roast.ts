@@ -17,36 +17,32 @@ export interface RoastResult {
   overallRoastLevel: string;
   archetype: { name: string; emoji: string; description: string };
 
-  // Category roasts (3 per platform, named generically)
-  githubRoast: CategoryRoast;
-  readmeRoast: CategoryRoast;
-  projectRoast: CategoryRoast;
-
-  // Improvements
+  // New Short Viral Format
+  headerText: string;
+  roastLines: RoastLine[];
   improvements: Improvement[];
+  positiveEnding: string;
 
   // Radar data
   radarData: RadarPoint[];
-}
 
-export interface CategoryRoast {
-  title: string;
-  icon: string;
-  severity: "mild" | "medium" | "brutal" | "nuclear";
-  score: number;
-  roastLines: RoastLine[];
-  metrics: { label: string; value: string; trend?: "up" | "down" | "flat" }[];
+  // Extracted raw metrics (bypasses AI)
+  metricsSummary?: {
+    stat1?: { label: string; value: string | number };
+    stat2?: { label: string; value: string | number };
+    stat3?: { label: string; value: string | number };
+    stat4?: { label: string; value: string | number };
+  };
 }
 
 export interface RoastLine {
-  type: "insult" | "damage" | "analysis" | "fix" | "positive";
+  type: string;
   text: string;
 }
 
 export interface Improvement {
-  category: string;
   icon: string;
-  suggestions: string[];
+  text: string;
 }
 
 export interface RadarPoint {

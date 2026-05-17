@@ -1,0 +1,71 @@
+{
+  "id": "avinash201199-9d6zk",
+  "username": "avinash201199",
+  "profileType": "github",
+  "profileUrl": "https://github.com/avinash201199",
+  "roastMode": "brutal",
+  "avatar": "https://avatars.githubusercontent.com/u/61057666?v=4",
+  "createdAt": "2026-05-17T17:05:31.008Z",
+  "hireabilityScore": 73,
+  "placementReadiness": 78,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "Free Tier Survivor",
+    "emoji": "🛡️",
+    "description": "You survived the roast because the AI models were down."
+  },
+  "headerText": "73/100 — The AI gave up.",
+  "roastLines": [
+    {
+      "type": "insult",
+      "text": "The AI models refused to look at your code to preserve their sanity."
+    },
+    {
+      "type": "damage",
+      "text": "Even our AI didn't want to read your code."
+    },
+    {
+      "type": "analysis",
+      "text": "You have 77 repos, but we couldn't parse them into a real roast."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Try generating the roast again when models are online."
+    }
+  ],
+  "positiveEnding": "At least your GitHub profile fetching worked perfectly!",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 73,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 14,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 81,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Activity",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Sizzle",
+      "score": 60,
+      "fullMark": 100
+    }
+  ]
+}

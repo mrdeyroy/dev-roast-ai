@@ -64,32 +64,32 @@ export default function ShareCard({ data }: Props) {
   }, [data.id, showToast]);
 
   const handleTwitterShare = useCallback(() => {
-    const text = `I just got roasted by Dev Roast AI 🔥\n\nScore: ${data.hireabilityScore}/100\nArchetype: ${data.archetype.name} ${data.archetype.emoji}\nVerdict: ${getRoastLevel(data.hireabilityScore)}\n\nThink you can survive?`;
+    const text = `Dev Roast AI just destroyed my career 💀`;
     const url = `${window.location.origin}/roast/${data.id}`;
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       "_blank"
     );
     showToast("Opening Twitter... 🐦");
-  }, [data, showToast]);
+  }, [data.id, showToast]);
 
   const handleLinkedInShare = useCallback(() => {
     const url = `${window.location.origin}/roast/${data.id}`;
-    // Include the URL explicitly in the text body so LinkedIn doesn't drop it
-    const text = `I just got roasted by Dev Roast AI 🔥\n\nScore: ${data.hireabilityScore}/100\nArchetype: ${data.archetype.name} ${data.archetype.emoji}\nVerdict: ${getRoastLevel(data.hireabilityScore)}\n\nThink you can survive? Try it here:\n${url}`;
+    const text = `Dev Roast AI just destroyed my career 💀\n\nScore: ${data.hireabilityScore}/100\nArchetype: ${data.archetype.name} ${data.archetype.emoji}\nVerdict: ${getRoastLevel(data.hireabilityScore)}\n\nSee my full roast here:\n${url}`;
     
+    // Using the feed endpoint is the only way to pre-fill text on LinkedIn
     window.open(
       `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(text)}`,
       "_blank"
     );
     showToast("Opening LinkedIn... 💼");
-  }, [data, showToast]);
+  }, [data.id, data.hireabilityScore, data.archetype, showToast]);
 
   const platformConfig = PLATFORM_CONFIG[data.profileType];
 
   // Get the best roast line for the quote
-  const bestRoastLine = data.githubRoast.roastLines.find(l => l.type === "damage")?.text 
-    || data.githubRoast.roastLines[0]?.text 
+  const bestRoastLine = data.roastLines?.find((l: any) => l.type === "damage")?.text 
+    || data.roastLines?.[0]?.text 
     || "No words. Just damage.";
 
   return (

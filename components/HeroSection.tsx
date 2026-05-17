@@ -143,17 +143,17 @@ export default function HeroSection() {
         transition={{ duration: 0.7, delay: 0.2 }}
         style={{
           fontSize: "clamp(2.8rem, 7vw, 5rem)",
-          maxWidth: 850,
+          maxWidth: 900,
           marginBottom: "1.5rem",
-          lineHeight: 1.05,
+          lineHeight: 1.00,
           position: "relative",
           zIndex: 1,
           letterSpacing: "-0.03em",
         }}
       >
-        Your GitHub called.
+        Your developer journey.
         <br />
-        <span className="gradient-text">It needs help.</span>
+        <span className="gradient-text">Needs emotional support.</span>
       </motion.h1>
 
       {/* Subtext */}

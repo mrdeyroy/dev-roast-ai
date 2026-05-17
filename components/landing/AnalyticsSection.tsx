@@ -106,9 +106,8 @@ const TODAYS_OFFENSES = [
 export default function AnalyticsSection() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [liveMessages, setLiveMessages] = useState<typeof LIVE_ROAST_MESSAGES>([]);
+  const [visibleCount, setVisibleCount] = useState(0);
   const [currentOffense, setCurrentOffense] = useState(0);
-  const messageIndexRef = useRef(0);
 
   useEffect(() => {
     fetch("/api/analytics")
@@ -122,18 +121,18 @@ export default function AnalyticsSection() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Simulate live activity feed
+  // Simulate live activity feed popping one by one, resetting, and repeating
   useEffect(() => {
-    // Initialize with 3 messages
-    const initial = LIVE_ROAST_MESSAGES.slice(0, 3);
-    setLiveMessages(initial);
-    messageIndexRef.current = 3;
-
     const interval = setInterval(() => {
-      const nextMsg = LIVE_ROAST_MESSAGES[messageIndexRef.current % LIVE_ROAST_MESSAGES.length];
-      messageIndexRef.current++;
-      setLiveMessages((prev) => [nextMsg, ...prev.slice(0, 4)]);
-    }, 3500);
+      setVisibleCount((prev) => {
+        if (prev >= 6) {
+          // Pause for 3 seconds before resetting
+          setTimeout(() => setVisibleCount(0), 3000);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);
@@ -281,30 +280,78 @@ export default function AnalyticsSection() {
 
             <div className="gradient-separator" style={{ margin: "0.25rem 0" }} />
 
-            {/* Emotional Damage Generated */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <AlertTriangle size={16} color="var(--roast-nuclear)" />
+            {/* Recent Profiles */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                <Activity size={16} color="var(--accent-purple)" />
                 <span style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
-                  Emotional Damage
+                  Recent Victims
                 </span>
               </div>
-              <span style={{ fontSize: "1.4rem", fontWeight: 700, fontFamily: "var(--font-heading)", color: "var(--roast-nuclear)" }}>
-                {loading ? "..." : <AnimatedCounter target={safeGenerated} suffix="+" />}
-              </span>
-            </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                {(() => {
+                  const formatTimeAgo = (timestampStr: string): string => {
+                    try {
+                      const date = new Date(timestampStr);
+                      const now = new Date();
+                      const diffMs = now.getTime() - date.getTime();
+                      const diffSec = Math.floor(diffMs / 1000);
+                      if (diffSec < 60) return "just now";
+                      const diffMin = Math.floor(diffSec / 60);
+                      if (diffMin < 60) return `${diffMin}m ago`;
+                      const diffHour = Math.floor(diffMin / 60);
+                      if (diffHour < 24) return `${diffHour}h ago`;
+                      const diffDay = Math.floor(diffHour / 24);
+                      return `${diffDay}d ago`;
+                    } catch {
+                      return "recently";
+                    }
+                  };
 
-            {/* Careers Evaluated */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <Briefcase size={16} color="var(--accent-cyan)" />
-                <span style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.05em", color: "var(--text-muted)", textTransform: "uppercase" }}>
-                  Careers Evaluated
-                </span>
+                  const fallbackVictims = [
+                    { name: "@johndoe", type: "GitHub", time: "2m ago" },
+                    { name: "@sarah_dev", type: "LinkedIn", time: "5m ago" },
+                    { name: "alexander.dev", type: "Portfolio", time: "12m ago" }
+                  ];
+
+                  const victims = data?.recentActivity && data.recentActivity.length > 0
+                    ? data.recentActivity.slice(0, 3).map((act) => {
+                        let displayName = act.username;
+                        // Clean legacy/default names
+                        if (displayName === "linkedin-roast") displayName = "linkedin_user";
+                        if (displayName === "portfolio-roast") displayName = "portfolio_site";
+
+                        const isDomain = displayName.includes(".");
+                        const name = isDomain ? displayName : (displayName.startsWith("@") ? displayName : `@${displayName}`);
+
+                        const type = isDomain || displayName.includes("portfolio") || act.type === "PORTFOLIO"
+                          ? "Portfolio"
+                          : displayName.toLowerCase().includes("linkedin") || act.type === "LINKEDIN"
+                            ? "LinkedIn"
+                            : "GitHub";
+
+                        return {
+                          name,
+                          type,
+                          time: formatTimeAgo(act.timestamp)
+                        };
+                      })
+                    : fallbackVictims;
+
+                  return victims.map((profile, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)", padding: "0.75rem 1rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: i === 0 ? "var(--roast-nuclear)" : i === 1 ? "var(--accent-cyan)" : "var(--accent-lime)" }} />
+                        <span style={{ fontSize: "0.85rem", color: "var(--text-primary)", fontWeight: 500 }}>{profile.name}</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                        <span style={{ fontSize: "0.65rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{profile.type}</span>
+                        <span style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>{profile.time}</span>
+                      </div>
+                    </div>
+                  ));
+                })()}
               </div>
-              <span style={{ fontSize: "1.4rem", fontWeight: 700, fontFamily: "var(--font-heading)" }}>
-                {loading ? "..." : <AnimatedCounter target={safeProfiles} />}
-              </span>
             </div>
           </div>
         </motion.div>
@@ -333,27 +380,31 @@ export default function AnalyticsSection() {
             </div>
           </div>
 
-          <div className="terminal-body activity-feed activity-feed-mask" style={{ flex: 1, minHeight: 280, padding: "0.75rem 1rem" }}>
+          <div className="terminal-body activity-feed activity-feed-mask" style={{ flex: 1, height: 320, overflow: "hidden", padding: "0.75rem 1rem" }}>
             <AnimatePresence>
-              {liveMessages.map((msg, i) => (
-                <motion.div
-                  key={`${msg.text}-${i}`}
-                  initial={{ opacity: 0, x: -15, height: 0 }}
-                  animate={{ opacity: 1, x: 0, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="activity-line"
-                  style={{ opacity: 1 - i * 0.15 }}
-                >
-                  <span style={{ fontSize: "0.85rem", flexShrink: 0 }}>{msg.icon}</span>
-                  <span style={{ fontSize: "0.75rem", color: msg.color, fontFamily: "var(--font-mono)", lineHeight: 1.4 }}>
-                    {msg.text}
-                  </span>
-                  <span style={{ fontSize: "0.55rem", color: "var(--text-muted)", marginLeft: "auto", flexShrink: 0, fontFamily: "var(--font-mono)" }}>
-                    {i === 0 ? "now" : `${(i + 1) * 3}s ago`}
-                  </span>
-                </motion.div>
-              ))}
+              {LIVE_ROAST_MESSAGES.slice(0, visibleCount).map((msg, i) => {
+                const age = (visibleCount - 1 - i) * 3;
+                const ageText = age === 0 ? "now" : `${age}s ago`;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -15, height: 0 }}
+                    animate={{ opacity: 1, x: 0, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="activity-line"
+                    style={{ opacity: 1 - (visibleCount - 1 - i) * 0.15 }}
+                  >
+                    <span style={{ fontSize: "0.85rem", flexShrink: 0 }}>{msg.icon}</span>
+                    <span style={{ fontSize: "0.75rem", color: msg.color, fontFamily: "var(--font-mono)", lineHeight: 1.4 }}>
+                      {msg.text}
+                    </span>
+                    <span style={{ fontSize: "0.55rem", color: "var(--text-muted)", marginLeft: "auto", flexShrink: 0, fontFamily: "var(--font-mono)" }}>
+                      {ageText}
+                    </span>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
 

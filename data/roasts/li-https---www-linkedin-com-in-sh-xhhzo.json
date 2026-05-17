@@ -1,0 +1,71 @@
+{
+  "id": "li-https---www-linkedin-com-in-sh-xhhzo",
+  "username": "https://www.linkedin.com/in/shibamdeyroy/",
+  "profileType": "linkedin",
+  "profileUrl": "https://www.linkedin.com/in/shibamdeyroy/",
+  "roastMode": "brutal",
+  "avatar": "",
+  "createdAt": "2026-05-17T17:26:50.793Z",
+  "hireabilityScore": 87,
+  "placementReadiness": 85,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "AI Quota Victim",
+    "emoji": "💀",
+    "description": "The AI models were too busy to roast you. Lucky escape."
+  },
+  "headerText": "87/100 — Buzzword overload.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "AI couldn't generate a roast, but your about section probably roasts itself."
+    },
+    {
+      "type": "analysis",
+      "text": "We found 0 buzzwords. The data speaks for itself."
+    },
+    {
+      "type": "insult",
+      "text": "It's just too corporate for the AI to handle."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Tone down the 'passionate leader' stuff and try again."
+    }
+  ],
+  "positiveEnding": "At least your buzzword density is real data.",
+  "radarData": [
+    {
+      "category": "Buzzword Free",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Readability",
+      "score": 85,
+      "fullMark": 100
+    },
+    {
+      "category": "Cringe-Free",
+      "score": 80,
+      "fullMark": 100
+    },
+    {
+      "category": "Achievements",
+      "score": 85,
+      "fullMark": 100
+    },
+    {
+      "category": "Skills",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Overall",
+      "score": 87,
+      "fullMark": 100
+    }
+  ]
+}

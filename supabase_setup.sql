@@ -28,3 +28,16 @@ ALTER TABLE roast_stats ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read access to activity" ON roast_activity FOR SELECT USING (true);
 CREATE POLICY "Allow public read access to stats" ON roast_stats FOR SELECT USING (true);
+
+-- 5. Create saved_roasts table
+CREATE TABLE IF NOT EXISTS saved_roasts (
+  id text PRIMARY KEY,
+  username text NOT NULL,
+  profile_type text NOT NULL,
+  score integer,
+  data jsonb NOT NULL,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE saved_roasts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access to saved_roasts" ON saved_roasts FOR SELECT USING (true);

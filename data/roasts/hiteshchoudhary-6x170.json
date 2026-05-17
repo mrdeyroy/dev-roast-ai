@@ -1,0 +1,89 @@
+{
+  "id": "hiteshchoudhary-6x170",
+  "username": "hiteshchoudhary",
+  "profileType": "github",
+  "profileUrl": "https://github.com/hiteshchoudhary",
+  "roastMode": "brutal",
+  "avatar": "https://avatars.githubusercontent.com/u/11613311?v=4",
+  "createdAt": "2026-05-17T18:01:27.410Z",
+  "hireabilityScore": 50,
+  "placementReadiness": 49,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "Free Tier Survivor",
+    "emoji": "🛡️",
+    "description": "You survived the roast because the AI models were down."
+  },
+  "headerText": "50/100 — The AI gave up.",
+  "roastLines": [
+    {
+      "type": "insult",
+      "text": "Recruiters opened your profile and closed the tab professionally."
+    },
+    {
+      "type": "damage",
+      "text": "Even our AI didn't want to read your code."
+    },
+    {
+      "type": "analysis",
+      "text": "You have 123 repos, but we couldn't parse them into a real roast."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Try generating the roast again when models are online."
+    }
+  ],
+  "positiveEnding": "At least your GitHub profile fetching worked perfectly!",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 50,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 8,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 71,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Activity",
+      "score": 60,
+      "fullMark": 100
+    },
+    {
+      "category": "Sizzle",
+      "score": 50,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 123
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 111
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "JavaScript"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 49371
+    }
+  }
+}

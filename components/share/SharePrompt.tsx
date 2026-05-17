@@ -60,6 +60,7 @@ export default function SharePrompt({ context, score, archetypeName }: Props) {
         </span>
       </div>
       <button
+        onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
         className="btn-outline"
         style={{
           padding: "0.35rem 0.8rem",

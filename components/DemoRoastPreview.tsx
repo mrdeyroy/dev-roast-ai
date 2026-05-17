@@ -17,6 +17,18 @@ const analysisLines = [
 
 export default function DemoRoastPreview() {
   const [visibleLines, setVisibleLines] = useState(0);
+  const [totalRoasted, setTotalRoasted] = useState<string>("...");
+
+  useEffect(() => {
+    fetch("/api/analytics")
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.success && result.data) {
+          setTotalRoasted(result.data.totalGenerated.toLocaleString());
+        }
+      })
+      .catch(() => setTotalRoasted("14,028")); // Fallback if API fails
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,26 +53,26 @@ export default function DemoRoastPreview() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          display: "flex",
+          flexWrap: "wrap",
           gap: "2.5rem",
           alignItems: "center",
         }}
       >
         {/* Left — Text */}
-        <div>
+        <div style={{ flex: "1 1 400px", minWidth: 0 }}>
           <span className="section-label">Live Preview</span>
           <h2 style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)", marginBottom: "1rem" }}>
             AI analysis in{" "}
             <span className="gradient-text-fire">real time</span>
           </h2>
           <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "1rem", marginBottom: "2rem" }}>
-            Watch as our AI scans your profile, detects patterns, and crafts 
+            Watch as our AI scans your profile, detects patterns, and crafts
             personalized roasts that are equal parts devastating and helpful.
           </p>
           <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
             {[
-              { label: "Developers Roasted", value: "2,847", trend: "+127", icon: Skull },
+              { label: "Developers Roasted", value: totalRoasted, trend: "+15", icon: Skull },
               { label: "Avg. Score", value: "47/100", trend: "-3", icon: TrendingDown },
               { label: "Tears Shed", value: "∞", trend: "↑", icon: null },
             ].map((stat, i) => (
@@ -94,7 +106,7 @@ export default function DemoRoastPreview() {
         </div>
 
         {/* Right — Terminal */}
-        <div className="terminal glow-corners" style={{ position: "relative" }}>
+        <div className="terminal glow-corners" style={{ position: "relative", flex: "1 1 400px", minWidth: 0 }}>
           <div className="terminal-header">
             <div className="terminal-dot" style={{ background: "#EF4444" }} />
             <div className="terminal-dot" style={{ background: "#EAB308" }} />
@@ -109,7 +121,7 @@ export default function DemoRoastPreview() {
               </span>
             </div>
           </div>
-          <div className="terminal-body" style={{ minHeight: 280 }}>
+          <div className="terminal-body" style={{ height: 280, overflow: "hidden" }}>
             {analysisLines.slice(0, visibleLines).map((line, i) => (
               <motion.div
                 key={i}

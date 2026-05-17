@@ -1,0 +1,71 @@
+{
+  "id": "pf-shibam-dey-roy---portfolio-urlnp",
+  "username": "Shibam Dey Roy | Portfolio",
+  "profileType": "portfolio",
+  "profileUrl": "https://shibamdeyroy.vercel.app/",
+  "roastMode": "brutal",
+  "avatar": "",
+  "createdAt": "2026-05-17T19:36:20.382Z",
+  "hireabilityScore": 31,
+  "placementReadiness": 5,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "Hosting Victim",
+    "emoji": "🌐",
+    "description": "Your portfolio survived because the AI didn't."
+  },
+  "headerText": "31/100 — Another template.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "AI couldn't roast your content. Maybe there wasn't enough to roast."
+    },
+    {
+      "type": "insult",
+      "text": "It's just another template anyway."
+    },
+    {
+      "type": "analysis",
+      "text": "We detected 0 projects, but no AI models."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Try again when AI is awake."
+    }
+  ],
+  "positiveEnding": "At least your site loaded. That's more than many developer portfolios can claim.",
+  "radarData": [
+    {
+      "category": "Originality",
+      "score": 80,
+      "fullMark": 100
+    },
+    {
+      "category": "UX Quality",
+      "score": 53,
+      "fullMark": 100
+    },
+    {
+      "category": "Content",
+      "score": 0,
+      "fullMark": 100
+    },
+    {
+      "category": "Projects",
+      "score": 5,
+      "fullMark": 100
+    },
+    {
+      "category": "Semantic HTML",
+      "score": 10,
+      "fullMark": 100
+    },
+    {
+      "category": "Overall",
+      "score": 31,
+      "fullMark": 100
+    }
+  ]
+}

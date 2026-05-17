@@ -6,9 +6,39 @@ import { analyzeLinkedInContent } from "@/lib/linkedin/analyzer";
 import { analyzePortfolio } from "@/lib/portfolio/analyzer";
 import { calculateLinkedInScores } from "@/lib/scoring/linkedin-calculator";
 import { calculatePortfolioScores } from "@/lib/scoring/portfolio-calculator";
+import { saveRoast } from "@/lib/roast-db";
 import type { RoastAPIResponse, RoastRequest } from "@/lib/types/roast";
 
 export const maxDuration = 60; // Allow up to 60 seconds for analysis
+
+function extractLinkedInHandle(input: string): string {
+  try {
+    const trimmed = input.trim();
+    if (trimmed.includes("linkedin.com")) {
+      const cleaned = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+      const url = new URL(cleaned);
+      const parts = url.pathname.split("/").filter(Boolean);
+      const inIndex = parts.indexOf("in");
+      if (inIndex !== -1 && parts[inIndex + 1]) {
+        return parts[inIndex + 1];
+      }
+    }
+    return "linkedin_user";
+  } catch {
+    return "linkedin_user";
+  }
+}
+
+function extractPortfolioDomain(input: string): string {
+  try {
+    const trimmed = input.trim();
+    const cleaned = trimmed.startsWith("http") ? trimmed : `http://${trimmed}`;
+    const url = new URL(cleaned);
+    return url.hostname.replace("www.", "");
+  } catch {
+    return "portfolio_site";
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,6 +131,7 @@ async function handleGitHubRoast(input: string, roastMode: string, placementMode
 
   const scores = calculateScores(analysis);
   const roastResult = await generateRoast(analysis, scores, roastMode, placementMode);
+  await saveRoast(roastResult);
 
   // Record analytics
   try {
@@ -138,11 +169,12 @@ async function handleLinkedInRoast(input: string, roastMode: string) {
 
   const scores = calculateLinkedInScores(analysis);
   const roastResult = await generateLinkedInRoast(analysis, scores, roastMode);
+  await saveRoast(roastResult);
 
   // Record analytics
   try {
     const { recordRoastActivity } = await import("@/lib/analytics");
-    await recordRoastActivity("linkedin-roast", 0);
+    await recordRoastActivity(extractLinkedInHandle(input), 0);
   } catch (e) {
     console.error("Failed to record analytics:", e);
   }
@@ -175,11 +207,12 @@ async function handlePortfolioRoast(input: string, roastMode: string) {
 
   const scores = calculatePortfolioScores(analysis);
   const roastResult = await generatePortfolioRoast(analysis, scores, roastMode);
+  await saveRoast(roastResult);
 
   // Record analytics
   try {
     const { recordRoastActivity } = await import("@/lib/analytics");
-    await recordRoastActivity("portfolio-roast", 0);
+    await recordRoastActivity(extractPortfolioDomain(input), 0);
   } catch (e) {
     console.error("Failed to record analytics:", e);
   }
