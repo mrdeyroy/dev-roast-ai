@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://devroastai.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Dev Roast AI — AI Roasts Your GitHub Career",
+  title: "Dev Roast AI",
   description:
     "AI-powered developer roasting. Paste your GitHub, LinkedIn, or portfolio and get roasted like a real recruiter would. Fun, savage, and actually useful career feedback.",
   keywords: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL(appUrl),
   openGraph: {
-    title: "Dev Roast AI — AI Roasts Your GitHub Career",
+    title: "Dev Roast AI",
     description:
       "Paste your GitHub and get roasted by AI. Funny, savage, and useful.",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dev Roast AI 🔥",
+    title: "Dev Roast AI",
     description:
       "AI just reviewed your developer career. It's not looking great.",
     images: ["/og/roast-image.png"],
