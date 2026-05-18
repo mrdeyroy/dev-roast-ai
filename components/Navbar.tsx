@@ -51,7 +51,7 @@ export default function Navbar() {
             style={{
               width: 36,
               height: 36,
-              borderRadius: 10,
+              borderRadius: "50%",
               background: "linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))",
               boxShadow: "0 0 20px rgba(0, 229, 255, 0.15)",
             }}
@@ -146,7 +146,7 @@ export default function Navbar() {
             }}
           >
             <Star size={14} fill="#EAB308" />
-            ⭐ GitHub Star
+            GitHub Star
           </motion.a>
 
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -232,7 +232,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
             >
               <Star size={16} fill="#EAB308" />
-              ⭐ GitHub Star
+              GitHub Star
             </a>
             <Link
               href="/roast"
