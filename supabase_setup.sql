@@ -26,7 +26,10 @@ ON CONFLICT (id) DO NOTHING;
 ALTER TABLE roast_activity ENABLE ROW LEVEL SECURITY;
 ALTER TABLE roast_stats ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Allow public read access to activity" ON roast_activity;
 CREATE POLICY "Allow public read access to activity" ON roast_activity FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access to stats" ON roast_stats;
 CREATE POLICY "Allow public read access to stats" ON roast_stats FOR SELECT USING (true);
 
 -- 5. Create saved_roasts table
@@ -40,8 +43,13 @@ CREATE TABLE IF NOT EXISTS saved_roasts (
 );
 
 ALTER TABLE saved_roasts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to saved_roasts" ON saved_roasts;
 CREATE POLICY "Allow public read access to saved_roasts" ON saved_roasts FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public insert access to saved_roasts" ON saved_roasts;
 CREATE POLICY "Allow public insert access to saved_roasts" ON saved_roasts FOR INSERT WITH CHECK (true);
 
 -- 6. Add insert access to roast_activity for anon/authenticated users
+DROP POLICY IF EXISTS "Allow public insert access to roast_activity" ON roast_activity;
 CREATE POLICY "Allow public insert access to roast_activity" ON roast_activity FOR INSERT WITH CHECK (true);
