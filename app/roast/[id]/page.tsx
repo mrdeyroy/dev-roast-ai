@@ -25,12 +25,11 @@ export async function generateMetadata(
     };
   }
 
-  const title = `Dev Roast AI: ${roast.username} got a ${roast.hireabilityScore}/100`;
-  const description = `${roast.archetype.emoji} ${roast.archetype.name} — ${roast.headerText}`;
-  const url = `https://devroast.ai/roast/${roast.id}`;
-  
-  // Using a dynamic OG image endpoint (future-proofing as requested by user)
-  const ogImageUrl = `https://devroast.ai/og/roast-image.png?username=${roast.username}&score=${roast.hireabilityScore}&archetype=${encodeURIComponent(roast.archetype.name)}`;
+  const title = `${roast.username} got roasted with a ${roast.hireabilityScore}/100 hireability score 💀 | Dev Roast AI`;
+  const description = `${roast.archetype?.emoji || "🕵️"} ${roast.archetype?.name || "Mystery Dev"} — "${roast.headerText || "Recruiters are nervous."}"`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://devroastai.vercel.app";
+  const url = `${appUrl}/roast/${roast.id}`;
+  const ogImageUrl = `${appUrl}/api/og/${roast.id}`;
 
   return {
     title,

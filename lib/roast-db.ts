@@ -20,13 +20,16 @@ export async function saveRoast(roast: RoastResult): Promise<void> {
   // Save to Supabase if available
   if (hasSupabase && supabase) {
     try {
-      await supabase.from("saved_roasts").insert({
+      const { error } = await supabase.from("saved_roasts").insert({
         id: roast.id,
         username: roast.username,
         profile_type: roast.profileType,
         score: roast.hireabilityScore,
         data: roast
       });
+      if (error) {
+        console.error("Supabase insert error:", error.message, error.details);
+      }
     } catch (e) {
       console.error("Failed to save to Supabase", e);
     }

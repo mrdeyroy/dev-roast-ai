@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { DEMO_ROAST } from "@/lib/mock-data";
 import { useRoastStore } from "@/lib/store";
@@ -22,29 +22,54 @@ interface Props {
 
 export default function RoastResultClient({ dbRoast, isDemo, requestedId }: Props) {
   const { roastResult } = useRoastStore();
+  const [clientRoast, setClientRoast] = useState<RoastResult | null>(null);
+
+  // Try to load full roast from localStorage if DB fetch failed and we are on client side
+  useEffect(() => {
+    if (typeof window !== "undefined" && !dbRoast && !isDemo) {
+      try {
+        const saved = localStorage.getItem(`full_roast:${requestedId}`);
+        if (saved) {
+          setClientRoast(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error("Failed to load local full roast:", e);
+      }
+    }
+  }, [dbRoast, isDemo, requestedId]);
 
   // Resolution logic:
   // 1. If demo, use DEMO_ROAST
   // 2. If DB has it, use DB
-  // 3. If Zustand store has it and IDs match, use store
-  // 4. If nothing else, fallback to demo/store
+  // 3. If loaded from localStorage, use clientRoast
+  // 4. If Zustand store has it and IDs match, use store
+  // 5. If nothing else, fallback to demo/store
   let data: RoastResult;
   if (isDemo) {
     data = DEMO_ROAST as RoastResult;
-  } else if (!dbRoast) {
-    if (roastResult && roastResult.id === requestedId) {
-      data = roastResult;
-    } else if (roastResult) {
-      data = roastResult; // show whatever is in store if ID miss
-    } else {
-      data = DEMO_ROAST as RoastResult;
-    }
-  } else {
+  } else if (dbRoast) {
     data = dbRoast;
+  } else if (clientRoast) {
+    data = clientRoast;
+  } else if (roastResult && roastResult.id === requestedId) {
+    data = roastResult;
+  } else if (roastResult) {
+    data = roastResult; // show whatever is in store if ID miss
+  } else {
+    data = DEMO_ROAST as RoastResult;
   }
+
+  // Dynamically update document title on mount to fix metadata fallback title mismatches
+  useEffect(() => {
+    if (data && !isDemo) {
+      const title = `${data.username} got roasted with a ${data.hireabilityScore}/100 hireability score 💀 | Dev Roast AI`;
+      document.title = title;
+    }
+  }, [data, isDemo]);
 
   useEffect(() => {
     if (!isDemo && data) {
+      // Save to summary history
       saveRoast({
         id: data.id,
         username: data.username,
@@ -55,6 +80,13 @@ export default function RoastResultClient({ dbRoast, isDemo, requestedId }: Prop
         createdAt: data.createdAt || new Date().toISOString(),
         shareUrl: `/roast/${data.id}`,
       });
+
+      // Save full roast details for tab recovery & refresh resilience
+      try {
+        localStorage.setItem(`full_roast:${data.id}`, JSON.stringify(data));
+      } catch (e) {
+        console.error("Failed to save full roast locally", e);
+      }
     }
   }, [data, isDemo]);
 

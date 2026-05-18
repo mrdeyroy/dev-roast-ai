@@ -164,7 +164,7 @@ async function handleLinkedInRoast(input: string, roastMode: string) {
   // If it's just a URL with no pasted content, provide a fun response
   if (analysis.inputType === "url" && analysis.metrics.totalWords < 15) {
     // Still analyze — the AI will roast them for hiding behind privacy
-    console.log("LinkedIn URL-only input detected, proceeding with limited analysis");
+    console.warn("LinkedIn URL-only input detected, proceeding with limited analysis");
   }
 
   const scores = calculateLinkedInScores(analysis);
@@ -202,7 +202,7 @@ async function handlePortfolioRoast(input: string, roastMode: string) {
 
   if (!analysis.fetchSuccess) {
     // Still proceed — the AI will roast the dead site
-    console.log(`Portfolio fetch failed: ${analysis.fetchError}. Generating roast anyway.`);
+    console.warn(`Portfolio fetch failed: ${analysis.fetchError}. Generating roast anyway.`);
   }
 
   const scores = calculatePortfolioScores(analysis);

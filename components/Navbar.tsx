@@ -146,7 +146,7 @@ export default function Navbar() {
             }}
           >
             <Star size={14} fill="#EAB308" />
-            Star on GitHub
+            ⭐ GitHub Star
           </motion.a>
 
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -232,7 +232,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
             >
               <Star size={16} fill="#EAB308" />
-              Star on GitHub
+              ⭐ GitHub Star
             </a>
             <Link
               href="/roast"

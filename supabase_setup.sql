@@ -41,3 +41,7 @@ CREATE TABLE IF NOT EXISTS saved_roasts (
 
 ALTER TABLE saved_roasts ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public read access to saved_roasts" ON saved_roasts FOR SELECT USING (true);
+CREATE POLICY "Allow public insert access to saved_roasts" ON saved_roasts FOR INSERT WITH CHECK (true);
+
+-- 6. Add insert access to roast_activity for anon/authenticated users
+CREATE POLICY "Allow public insert access to roast_activity" ON roast_activity FOR INSERT WITH CHECK (true);
