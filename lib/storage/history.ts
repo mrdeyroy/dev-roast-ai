@@ -27,19 +27,38 @@ export function saveRoast(roast: HistoryRoast): void {
   if (typeof window === "undefined") return;
   try {
     const current = getRoasts();
-    const existingIndex = current.findIndex((r) => r.id === roast.id);
+
+    // Deduplicate: check by ID OR by same username + type
+    const existingById = current.findIndex((r) => r.id === roast.id);
+    const existingByProfile = current.findIndex(
+      (r) =>
+        r.type === roast.type &&
+        r.username.toLowerCase() === roast.username.toLowerCase() &&
+        r.id !== roast.id
+    );
+
     let updated = [...current];
-    if (existingIndex !== -1) {
-      // Update existing
-      updated[existingIndex] = roast;
+
+    if (existingById !== -1) {
+      // Update existing entry by ID
+      updated[existingById] = roast;
+      // Move to front
+      const item = updated.splice(existingById, 1)[0];
+      updated.unshift(item);
+    } else if (existingByProfile !== -1) {
+      // Replace old entry for same profile, move to front
+      updated.splice(existingByProfile, 1);
+      updated.unshift(roast);
     } else {
       // Add new to front
       updated.unshift(roast);
     }
+
     // Limit size
     if (updated.length > MAX_ROASTS) {
       updated = updated.slice(0, MAX_ROASTS);
     }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {
     console.error("Failed to save roast to history", e);

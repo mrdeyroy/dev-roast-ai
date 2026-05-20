@@ -1,0 +1,89 @@
+{
+  "id": "akash504-ai-7mccq",
+  "username": "Akash504-ai",
+  "profileType": "github",
+  "profileUrl": "https://github.com/Akash504-ai",
+  "roastMode": "brutal",
+  "avatar": "https://avatars.githubusercontent.com/u/199394642?v=4",
+  "createdAt": "2026-05-20T16:00:10.016Z",
+  "hireabilityScore": 63,
+  "placementReadiness": 65,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "Free Tier Survivor",
+    "emoji": "🛡️",
+    "description": "You survived the roast because the AI models were down."
+  },
+  "headerText": "63/100 — The AI gave up.",
+  "roastLines": [
+    {
+      "type": "insult",
+      "text": "The AI models refused to look at your code to preserve their sanity."
+    },
+    {
+      "type": "damage",
+      "text": "Even our AI didn't want to read your code."
+    },
+    {
+      "type": "analysis",
+      "text": "You have 56 repos, but we couldn't parse them into a real roast."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Try generating the roast again when models are online."
+    }
+  ],
+  "positiveEnding": "At least your GitHub profile fetching worked perfectly!",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 63,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 32,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 85,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Activity",
+      "score": 55,
+      "fullMark": 100
+    },
+    {
+      "category": "Sizzle",
+      "score": 64,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 56
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 25
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "JavaScript"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 2
+    }
+  }
+}

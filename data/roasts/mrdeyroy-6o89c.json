@@ -1,0 +1,89 @@
+{
+  "id": "mrdeyroy-6o89c",
+  "username": "mrdeyroy",
+  "profileType": "github",
+  "profileUrl": "https://github.com/mrdeyroy",
+  "roastMode": "brutal",
+  "avatar": "https://avatars.githubusercontent.com/u/169705535?v=4",
+  "createdAt": "2026-05-20T15:10:11.001Z",
+  "hireabilityScore": 86,
+  "placementReadiness": 90,
+  "overallRoastLevel": "Fallback",
+  "archetype": {
+    "name": "Free Tier Survivor",
+    "emoji": "🛡️",
+    "description": "You survived the roast because the AI models were down."
+  },
+  "headerText": "86/100 — The AI gave up.",
+  "roastLines": [
+    {
+      "type": "insult",
+      "text": "Your GitHub survived. Your README did not."
+    },
+    {
+      "type": "damage",
+      "text": "Even our AI didn't want to read your code."
+    },
+    {
+      "type": "analysis",
+      "text": "You have 12 repos, but we couldn't parse them into a real roast."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "⚙️",
+      "text": "Try generating the roast again when models are online."
+    }
+  ],
+  "positiveEnding": "At least your GitHub profile fetching worked perfectly!",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 86,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 80,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 93,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Activity",
+      "score": 55,
+      "fullMark": 100
+    },
+    {
+      "category": "Sizzle",
+      "score": 90,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 12
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 3
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "JavaScript"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 0
+    }
+  }
+}

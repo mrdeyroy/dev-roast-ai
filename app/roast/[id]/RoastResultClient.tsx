@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { DEMO_ROAST } from "@/lib/mock-data";
 import { useRoastStore } from "@/lib/store";
@@ -12,7 +13,8 @@ import SharePrompt from "@/components/share/SharePrompt";
 import Footer from "@/components/Footer";
 import type { RoastResult } from "@/lib/types/roast";
 import { saveRoast } from "@/lib/storage/history";
-import { Info, Flame, AlertTriangle, Settings, BarChart2, CheckCircle2 } from "lucide-react";
+import { saveCachedRoast } from "@/lib/storage/cache";
+import { AlertTriangle, Settings, BarChart2, RefreshCcw } from "lucide-react";
 
 interface Props {
   dbRoast: RoastResult | null;
@@ -21,7 +23,8 @@ interface Props {
 }
 
 export default function RoastResultClient({ dbRoast, isDemo, requestedId }: Props) {
-  const { roastResult } = useRoastStore();
+  const router = useRouter();
+  const { roastResult, setInput } = useRoastStore();
   const [clientRoast, setClientRoast] = useState<RoastResult | null>(null);
 
   // Try to load full roast from localStorage if DB fetch failed and we are on client side
@@ -87,8 +90,28 @@ export default function RoastResultClient({ dbRoast, isDemo, requestedId }: Prop
       } catch (e) {
         console.error("Failed to save full roast locally", e);
       }
+
+      // Save to cache for duplicate prevention
+      const identifier = data.profileUrl || data.username || data.id;
+      saveCachedRoast(data.profileType, identifier, {
+        roastId: data.id,
+        username: data.username,
+        profileType: data.profileType,
+        roastResult: data,
+        generatedAt: data.createdAt || new Date().toISOString(),
+      });
     }
   }, [data, isDemo]);
+
+  const handleReRoast = useCallback(() => {
+    setInput({
+      profileType: data.profileType,
+      profileUrl: data.profileType === "linkedin" ? "" : (data.profileUrl || data.username),
+      linkedInText: data.profileType === "linkedin" ? (data.profileUrl || data.username) : "",
+      roastMode: data.roastMode as any || "recruiter",
+    });
+    router.push("/roast");
+  }, [data, router, setInput]);
 
   const platformConfig = PLATFORM_CONFIG[data.profileType];
 
@@ -302,6 +325,32 @@ export default function RoastResultClient({ dbRoast, isDemo, requestedId }: Prop
               </div>
             </div>
           </div>
+        )}
+
+        {/* Re-Roast Button */}
+        {!isDemo && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ textAlign: "center", marginBottom: "2rem" }}
+          >
+            <button
+              onClick={handleReRoast}
+              className="btn-outline"
+              style={{
+                padding: "0.8rem 2rem",
+                fontSize: "0.9rem",
+                borderColor: "var(--accent-purple)",
+                color: "var(--accent-purple)",
+              }}
+            >
+              <RefreshCcw size={16} />
+              Re-Roast 🔄
+            </button>
+            <p style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>
+              Force a fresh AI generation (bypasses cache)
+            </p>
+          </motion.div>
         )}
 
         <SharePrompt context="after-roast" />

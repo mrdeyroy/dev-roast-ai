@@ -1,0 +1,93 @@
+{
+  "id": "spreadsheets600-th2c3",
+  "username": "SpreadSheets600",
+  "profileType": "github",
+  "profileUrl": "https://github.com/SpreadSheets600",
+  "roastMode": "faang",
+  "avatar": "https://avatars.githubusercontent.com/u/115402296?v=4",
+  "createdAt": "2026-05-20T15:27:45.781Z",
+  "hireabilityScore": 65,
+  "placementReadiness": 68,
+  "overallRoastLevel": "medium",
+  "archetype": {
+    "name": "Spreadsheet Slinger",
+    "emoji": "📊",
+    "description": "Collecting empty spreadsheets like a hoarder on a binge"
+  },
+  "headerText": "65/100 — Recruiters whisper 'calm down, it’s a spreadsheet'.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "141 repos, 86 dead — you’re basically a data cemetery."
+    },
+    {
+      "type": "insult",
+      "text": "Your star count is 108… in a dark web crawler contest."
+    },
+    {
+      "type": "analysis",
+      "text": "Astro, JSON, HTML? You’ve never seen a true tech stack."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "🔥",
+      "text": "Delete the 86 inactive repos before you need a graveyard app."
+    },
+    {
+      "icon": "💻",
+      "text": "Learn a language that isn’t just a file format."
+    }
+  ],
+  "positiveEnding": "At least you’re honest enough to claim the top language is Astro.",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 65,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 29,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 94,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Profile Comp.",
+      "score": 60,
+      "fullMark": 100
+    },
+    {
+      "category": "Stack Depth",
+      "score": 50,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 141
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 86
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "Python"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 108
+    }
+  }
+}

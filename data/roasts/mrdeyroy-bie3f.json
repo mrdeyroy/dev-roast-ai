@@ -1,0 +1,93 @@
+{
+  "id": "mrdeyroy-bie3f",
+  "username": "mrdeyroy",
+  "profileType": "github",
+  "profileUrl": "https://github.com/mrdeyroy",
+  "roastMode": "brutal",
+  "avatar": "https://avatars.githubusercontent.com/u/169705535?v=4",
+  "createdAt": "2026-05-20T16:07:39.924Z",
+  "hireabilityScore": 87,
+  "placementReadiness": 91,
+  "overallRoastLevel": "mild",
+  "archetype": {
+    "name": "Repo Renegade",
+    "emoji": "💀",
+    "description": "Code that runs on his own schedule, not yours."
+  },
+  "headerText": "14 repos, 0 stars—still chasing credit.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "Three languages, one year of mystery: TypeScript, Python, Java. Guess which one he actually wrote? Always JavaScript."
+    },
+    {
+      "type": "insult",
+      "text": "736 days old his account, but his projects are still in 2010—time travel is only for the dead."
+    },
+    {
+      "type": "analysis",
+      "text": "Only 6 deployments and 4 inactive repos: he's on a permanent coffee break, not the GitHub grind."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "🔥",
+      "text": "Start pulling code from the repo, not just watching the stars."
+    },
+    {
+      "icon": "💻",
+      "text": "Add a README that explains why you can't find any."
+    }
+  ],
+  "positiveEnding": "At least a hireability score of 87—proof he knows the difference between a comment and a mistake.",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 87,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 76,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 95,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Profile Comp.",
+      "score": 65,
+      "fullMark": 100
+    },
+    {
+      "category": "Stack Depth",
+      "score": 90,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 14
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 4
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "JavaScript"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 0
+    }
+  }
+}

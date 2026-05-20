@@ -35,9 +35,11 @@ interface AIRoastOutput {
 }
 
 const MODELS = [
-  "deepseek/deepseek-chat-v3-0324:free",
-  "qwen/qwen3-32b:free",
-  "google/gemma-3-27b-it:free",
+  "minimax/minimax-m2.5:free",
+  "openai/gpt-oss-20b:free",
+  "openai/gpt-oss-120b:free",
+  "google/gemma-4-31b-it:free",
+  "openrouter/free",
 ];
 
 function getOpenAIClient() {
@@ -79,14 +81,50 @@ async function callAIWithModel(prompt: string, systemMessage: string, model: str
 
 async function callAI(prompt: string, systemMessage: string): Promise<AIRoastOutput | null> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000); // reduced to 6s for speed
+  const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for free tier reliability
+
+  const errors: { model: string; error: any }[] = [];
+
+  const runModel = async (model: string) => {
+    try {
+      return await callAIWithModel(prompt, systemMessage, model, controller.signal);
+    } catch (err) {
+      errors.push({ model, error: err });
+      throw err;
+    }
+  };
+
+  const startModelWithDelay = (model: string, delayMs: number): Promise<string> => {
+    if (delayMs === 0) {
+      return runModel(model);
+    }
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        if (controller.signal.aborted) {
+          reject(new Error("Aborted before start"));
+          return;
+        }
+        runModel(model).then(resolve, reject);
+      }, delayMs);
+      
+      controller.signal.addEventListener("abort", () => clearTimeout(timer));
+    });
+  };
 
   try {
-    const promises = MODELS.map(model => callAIWithModel(prompt, systemMessage, model, controller.signal));
+    // Stagger requests to avoid simultaneous rate limits
+    const promises = [
+      startModelWithDelay("minimax/minimax-m2.5:free", 0),
+      startModelWithDelay("openai/gpt-oss-20b:free", 1000),
+      startModelWithDelay("openai/gpt-oss-120b:free", 2000),
+      startModelWithDelay("google/gemma-4-31b-it:free", 3000),
+      startModelWithDelay("openrouter/free", 3000),
+    ];
     
     // Race all models — first to succeed wins
     const responseText = await Promise.any(promises);
     clearTimeout(timeoutId);
+    controller.abort(); // cancel other pending requests
 
     try {
       return JSON.parse(responseText);
@@ -103,7 +141,12 @@ async function callAI(prompt: string, systemMessage: string): Promise<AIRoastOut
     }
   } catch (error) {
     clearTimeout(timeoutId);
-    console.error("All OpenRouter free models failed or timed out:", error);
+    controller.abort();
+    console.error("All OpenRouter free models failed or timed out.");
+    errors.forEach(({ model, error: err }) => {
+      const status = err?.status || err?.response?.status || "unknown";
+      console.error(`- Model ${model} failed (status ${status}):`, err?.message || err);
+    });
     return null;
   }
 }

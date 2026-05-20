@@ -1,0 +1,93 @@
+{
+  "id": "mrdeyroy-8v8mn",
+  "username": "mrdeyroy",
+  "profileType": "github",
+  "profileUrl": "https://github.com/mrdeyroy",
+  "roastMode": "recruiter",
+  "avatar": "https://avatars.githubusercontent.com/u/169705535?v=4",
+  "createdAt": "2026-05-20T15:24:09.266Z",
+  "hireabilityScore": 87,
+  "placementReadiness": 91,
+  "overallRoastLevel": "mild",
+  "archetype": {
+    "name": "Code Coy",
+    "emoji": "⚡",
+    "description": "Deploys like a hero, but nobody sees the fireworks."
+  },
+  "headerText": "736 days, 0 stars: The pale light of a sunrise in the void.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "14 repos, 4 inactive—your portfolio is less active than your dad’s gym membership."
+    },
+    {
+      "type": "insult",
+      "text": "TypeScript, Python, Java? Maybe you’re just using the alphabet to impress recruiters."
+    },
+    {
+      "type": "analysis",
+      "text": "87 hireability? Only if the hiring manager is a bot that likes pixel art and 1‑liner scripts."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "🔥",
+      "text": "Add real projects, not tutorial clones, and break up the 736‑day zombie cycle."
+    },
+    {
+      "icon": "💻",
+      "text": "Show at least one repo with >0 stars—some public validation cracks the ice."
+    }
+  ],
+  "positiveEnding": "You’ve mastered the art of being an invisible coder—nice dedication.",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 87,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 76,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 95,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Profile Comp.",
+      "score": 65,
+      "fullMark": 100
+    },
+    {
+      "category": "Stack Depth",
+      "score": 90,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 14
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 4
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "JavaScript"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 0
+    }
+  }
+}

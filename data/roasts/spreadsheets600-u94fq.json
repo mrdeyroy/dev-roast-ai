@@ -1,0 +1,97 @@
+{
+  "id": "spreadsheets600-u94fq",
+  "username": "SpreadSheets600",
+  "profileType": "github",
+  "profileUrl": "https://github.com/SpreadSheets600",
+  "roastMode": "recruiter",
+  "avatar": "https://avatars.githubusercontent.com/u/115402296?v=4",
+  "createdAt": "2026-05-20T16:03:14.557Z",
+  "hireabilityScore": 65,
+  "placementReadiness": 68,
+  "overallRoastLevel": "medium",
+  "archetype": {
+    "name": "Spreadsheet Samurai",
+    "emoji": "📊",
+    "description": "Turns Excel macros into code, then forgets to run them."
+  },
+  "headerText": "141 repos, 108 stars – a data‑driven tragedy.",
+  "roastLines": [
+    {
+      "type": "damage",
+      "text": "141 repos and 86 of them are dead weight."
+    },
+    {
+      "type": "insult",
+      "text": "Your top languages are Astro, JSON, and HTML – the holy trinity of copy‑paste."
+    },
+    {
+      "type": "analysis",
+      "text": "10 tutorial projects prove you’re still learning how to press ‘git push’."
+    }
+  ],
+  "improvements": [
+    {
+      "icon": "🔥",
+      "text": "Archive those 86 inactive repos; your profile isn’t a museum."
+    },
+    {
+      "icon": "💻",
+      "text": "Swap one tutorial for a real‑world project that actually runs."
+    },
+    {
+      "icon": "🚀",
+      "text": "Earn stars by fixing bugs, not by adding pointless READMEs."
+    }
+  ],
+  "positiveEnding": "At least your hireability score of 65 shows you’ve got a flicker of potential.",
+  "radarData": [
+    {
+      "category": "Hireability",
+      "score": 65,
+      "fullMark": 100
+    },
+    {
+      "category": "Consistency",
+      "score": 29,
+      "fullMark": 100
+    },
+    {
+      "category": "Originality",
+      "score": 94,
+      "fullMark": 100
+    },
+    {
+      "category": "Readme Quality",
+      "score": 100,
+      "fullMark": 100
+    },
+    {
+      "category": "Profile Comp.",
+      "score": 60,
+      "fullMark": 100
+    },
+    {
+      "category": "Stack Depth",
+      "score": 50,
+      "fullMark": 100
+    }
+  ],
+  "metricsSummary": {
+    "stat1": {
+      "label": "Total Repositories",
+      "value": 141
+    },
+    "stat2": {
+      "label": "Inactive (6+ months)",
+      "value": 86
+    },
+    "stat3": {
+      "label": "Top Language",
+      "value": "Python"
+    },
+    "stat4": {
+      "label": "Stars Earned",
+      "value": 108
+    }
+  }
+}

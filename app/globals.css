@@ -675,6 +675,50 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 12px currentColor, 0 0 24px currentColor;
 }
 
+/* ===== Validation Animations ===== */
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.shake-animation {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+.validation-pulse {
+  animation: validationPulse 1.2s ease-in-out infinite;
+}
+
+.validation-valid {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+.validation-invalid {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes validationPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
   :root {

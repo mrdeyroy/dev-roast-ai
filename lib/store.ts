@@ -2,21 +2,21 @@ import { create } from "zustand";
 import type { RoastMode, ProfileType } from "./utils";
 import type { RoastResult } from "./types/roast";
 
+export type ValidationStatus = "idle" | "checking" | "valid" | "invalid";
+
 interface RoastInput {
   profileType: ProfileType;
   profileUrl: string;
-  linkedInText: string; // paste mode text for LinkedIn
+  linkedInText: string;
   roastMode: RoastMode;
   placementMode: boolean;
 }
 
 interface RoastStore {
-  // Input state
   input: RoastInput;
   setInput: (input: Partial<RoastInput>) => void;
   resetInput: () => void;
 
-  // Loading state
   isLoading: boolean;
   loadingProgress: number;
   loadingStep: string;
@@ -24,15 +24,17 @@ interface RoastStore {
   setLoadingProgress: (progress: number) => void;
   setLoadingStep: (step: string) => void;
 
-  // Result state
   currentRoastId: string | null;
   roastResult: RoastResult | null;
   setCurrentRoastId: (id: string | null) => void;
   setRoastResult: (result: RoastResult | null) => void;
 
-  // Error state
   error: string | null;
   setError: (error: string | null) => void;
+
+  validationStatus: ValidationStatus;
+  validationMessage: string;
+  setValidation: (status: ValidationStatus, message?: string) => void;
 }
 
 const defaultInput: RoastInput = {
@@ -63,4 +65,8 @@ export const useRoastStore = create<RoastStore>((set) => ({
 
   error: null,
   setError: (error) => set({ error }),
+
+  validationStatus: "idle",
+  validationMessage: "",
+  setValidation: (status, message = "") => set({ validationStatus: status, validationMessage: message }),
 }));
