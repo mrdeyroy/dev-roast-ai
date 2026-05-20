@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import ScrollToTop from "@/components/ScrollToTop";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -66,6 +67,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen" suppressHydrationWarning>
         <ScrollToTop />
+        <ScrollToTopButton />
         {/* Cinematic background system */}
         <div className="mesh-gradient-bg" aria-hidden="true" />
         <div className="mesh-gradient-extra" aria-hidden="true" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flame, Globe, ArrowUp } from "lucide-react";
+import { Flame, Globe } from "lucide-react";
 import Link from "next/link";
 
 const GithubIcon = ({ size = 24, ...props }: any) => (
@@ -47,13 +47,6 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <footer
       style={{
@@ -73,46 +66,8 @@ export default function Footer() {
           gap: "1.75rem",
           textAlign: "center",
           padding: "3rem 1.5rem",
-          position: "relative",
         }}
       >
-        {/* Back to Top Icon Button */}
-        <motion.button
-          onClick={scrollToTop}
-          whileHover={{ y: -3, scale: 1.1, boxShadow: "0 0 15px rgba(0, 229, 255, 0.3)" }}
-          whileTap={{ scale: 0.95 }}
-          style={{
-            position: "absolute",
-            right: "1.5rem",
-            top: "2.8rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "36px",
-            height: "36px",
-            background: "rgba(255, 255, 255, 0.03)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "50%",
-            color: "var(--text-secondary)",
-            cursor: "pointer",
-            transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            outline: "none",
-            zIndex: 10,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.5)";
-            e.currentTarget.style.color = "var(--text-primary)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
-            e.currentTarget.style.color = "var(--text-secondary)";
-          }}
-          aria-label="Back to Top"
-        >
-          <ArrowUp size={16} style={{ color: "var(--accent-cyan)" }} />
-        </motion.button>
-
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
