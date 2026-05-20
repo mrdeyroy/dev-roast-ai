@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flame, Globe } from "lucide-react";
+import { Flame, Globe, ArrowUp } from "lucide-react";
 import Link from "next/link";
 
 const GithubIcon = ({ size = 24, ...props }: any) => (
@@ -47,6 +47,13 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <footer
       style={{
@@ -68,6 +75,41 @@ export default function Footer() {
           padding: "3rem 1.5rem",
         }}
       >
+        {/* Back to Top Button */}
+        <motion.button
+          onClick={scrollToTop}
+          whileHover={{ y: -3, scale: 1.05, boxShadow: "0 0 20px rgba(0, 229, 255, 0.25)" }}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            background: "rgba(255, 255, 255, 0.03)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "24px",
+            padding: "0.55rem 1.1rem",
+            color: "var(--text-secondary)",
+            fontSize: "0.82rem",
+            fontWeight: 600,
+            fontFamily: "var(--font-heading)",
+            cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            outline: "none",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "rgba(0, 229, 255, 0.5)";
+            e.currentTarget.style.color = "var(--text-primary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+            e.currentTarget.style.color = "var(--text-secondary)";
+          }}
+        >
+          <ArrowUp size={14} style={{ color: "var(--accent-cyan)" }} />
+          <span>Back to Top</span>
+        </motion.button>
+
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
